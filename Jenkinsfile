@@ -18,18 +18,13 @@ podTemplate(label: label,
             container('maven') {
                 stage('Build and Project') {
                     sh 'mvn clean package'
-                }
-            }
-        }
-         
-        stage('Build Docker Image') {
-            container('a-360') {
-                stage('Package into Docker Image') {
-                    sh 'docker build -t nexus-helm:latest .'
+                     sh 'docker build -t nexus-helm:latest .'
                     sh 'docker tag nexus-helm:latest invent360/nexus-helm:latest'
                 }
             }
         }
+         
+
 
         stage('Publish Image') {
             container('a-360'){  
