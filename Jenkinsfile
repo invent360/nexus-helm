@@ -2,6 +2,7 @@ def label = "mypod-${UUID.randomUUID().toString()}"
 podTemplate(label: label, 
      containers: [
         containerTemplate(name: 'a-360', image: 'katson95/a-360:latest', ttyEnabled: true, command: 'cat'),
+        containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat')
      ], 
      volumes: [
         hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
@@ -13,6 +14,13 @@ podTemplate(label: label,
         def IMAGE_NAME = 'invent360/nexus-helm'
         def IMAGE_VERSION = 'latest'        
         
+         stage('Build Project') {
+            container('maven') {
+                stage('Build and Project') {
+                    sh 'mvn clean package'
+                }
+            }
+        }
          
         stage('Build Docker Image') {
             container('a-360') {
